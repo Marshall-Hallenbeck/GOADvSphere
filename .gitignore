@@ -1,5 +1,14 @@
 # Ignore Packer cache directory
 .*packer_cache/.*
+terraform/build_templates/packer_cache/
 
 # Ignore dot files
 .*
+
+# Terraform
+terraform/build_templates/terraform.tfstate
+terraform/build_templates/terraform.tfstate.backup
+
+# Bins
+bin/packer_1.10.0_windows_amd64.zip
+bin/terraform_1.6.6_windows_amd64.zip
