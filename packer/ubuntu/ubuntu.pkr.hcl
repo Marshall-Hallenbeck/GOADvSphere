@@ -25,9 +25,10 @@ source "vsphere-iso" "ubuntu" {
   shutdown_command = "echo '${var.ssh_password}' | sudo -S -E shutdown -P now"
   shutdown_timeout = "5m"
   http_ip          = "${var.http_file_host}"
-  http_directory   = "../../packer/ubuntu/files/"
-  http_port_min    = "8100"
-  http_port_max    = "8299"
+  http_port        = "80"
+  // http_directory   = "../../packer/ubuntu/files/"
+  // http_port_min    = "8100"
+  // http_port_max    = "8299"
   boot_wait        = "2s"
   boot_command = [
     "c<wait>",
@@ -42,11 +43,16 @@ source "vsphere-iso" "ubuntu" {
   guest_os_type        = "ubuntu64Guest"
   host                 = "${var.vsphere_esxi_host}"
   insecure_connection  = true
-  iso_url              = "http://lab.malicious.group/ubuntu-22.04.iso"
-  iso_checksum         = "5e38b55d57d94ff029719342357325ed3bda38fa80054f9330dc789cd2d43931"
-  folder               = "templates/ubuntu2204/"
+  ip_wait_timeout      = "120m"
+  datastore            = "${var.vsphere_datastore}"
+  iso_paths = [
+    "[TrueNAS_ISOs] Linux/Ubuntu/ubuntu-22.04.3-live-server-amd64.iso"
+  ]
+  // iso_url              = "http://lab.malicious.group/ubuntu-22.04.iso"
+  // iso_checksum         = "5e38b55d57d94ff029719342357325ed3bda38fa80054f9330dc789cd2d43931"
+  folder               = "GOAD/templates/ubuntu2204/"
   network_adapters {
-    network      = "VM Network"
+    network      = "GOAD"
     network_card = "vmxnet3"
   }
   password     = "${var.vsphere_password}"

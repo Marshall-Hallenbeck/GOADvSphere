@@ -32,15 +32,20 @@ source "vsphere-iso" "windows2016" {
   host                 = "${var.vsphere_esxi_host}"
   insecure_connection  = true
   communicator         = "winrm"
-  iso_url              = "http://lab.malicious.group/Windows_Server_2016.ISO"
-  iso_checksum         = "1ce702a578a3cb1ac3d14873980838590f06d5b7101c5daaccbac9d73f1fb50f"
-  iso_paths            = [
-    "[] /vmimages/tools-isoimages/windows.iso"
+  ip_wait_timeout      = "120m"
+  datastore            = "${var.vsphere_datastore}"
+  iso_paths = [
+    "[TrueNAS_ISOs] Windows/Server 2016/Windows_Server_2016_Datacenter_EVAL_en-us_14393_refresh.ISO"
   ]
-  folder               = "templates/windows2016/"
+  // iso_url              = "http://lab.malicious.group/Windows_Server_2016.ISO"
+  // iso_checksum         = "1ce702a578a3cb1ac3d14873980838590f06d5b7101c5daaccbac9d73f1fb50f"
+  // iso_paths            = [
+  //   "[] /vmimages/tools-isoimages/windows.iso"
+  // ]
+  folder               = "GOAD/templates/windows2016/"
 
   network_adapters {
-    network      = "VM Network"
+    network      = "GOAD"
     network_card = "vmxnet3"
   }
   disk_controller_type  = ["lsilogic-sas"]

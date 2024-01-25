@@ -19,15 +19,15 @@ variable "http_file_host" {}
 
 source "vsphere-iso" "pfsense" {
   convert_to_template  = true
-  CPUs                 = 1
-  RAM                  = 2048
+  CPUs                 = 2
+  RAM                  = 4096
   RAM_reserve_all      = true
   shutdown_command = "sudo /etc/rc.halt"
   shutdown_timeout = "1m"
-  http_ip          = "${var.http_file_host}"
-  http_directory   = "../../packer/pfsense/files"
-  http_port_min    = "8100"
-  http_port_max    = "8299"
+  // http_ip          = "${var.http_file_host}"
+  // http_directory   = "../../packer/pfsense/files"
+  // http_port_min    = "8100"
+  // http_port_max    = "8299"
   boot_command     = [
     # Initial install for 2.7.1
     "<wait30><enter>", # Accept EULA
@@ -121,7 +121,8 @@ source "vsphere-iso" "pfsense" {
     "<wait>echo '%wheel ALL=(ALL) NOPASSWD: ALL' >> /usr/local/etc/sudoers<enter>",
     "<wait>chmod 440 /usr/local/etc/sudoers<enter>",
     "<wait>chflags schg /usr/local/etc/sudoers<enter>",
-    "<wait>curl -o /tmp/config.xml http://{{ .HTTPIP }}:{{ .HTTPPort }}/config.xml<enter>",
+    "<wait>curl -o /tmp/config.xml http://${var.http_file_host}/config.xml<enter>",
+    // "<wait>curl -o /tmp/config.xml http://{{ .HTTPIP }}:{{ .HTTPPort }}/config.xml<enter>",
     "<wait>sed 's/CHANGE_PREAUTH_KEY/${var.tailscale_preauth_key}/g' /tmp/config.xml > /cf/conf/config.xml<enter>",
     "<wait>pfctl -d -F all<enter>",
   ]
@@ -129,16 +130,21 @@ source "vsphere-iso" "pfsense" {
   guest_os_type        = "freebsd12_64Guest"
   host                 = "${var.vsphere_esxi_host}"
   insecure_connection  = true
-  iso_url              = "http://lab.malicious.group/pfSense-CE-2.7.1-RELEASE-amd64.iso"
-  iso_checksum         = "146d5fb7eb3dd070d898902eb418c292612363460d08bcadb43beb2670198fe2"
-  folder               = "templates/pfsense/"
+  ip_wait_timeout      = "120m"
+  datastore            = "${var.vsphere_datastore}"
+  iso_paths = [
+    "[TrueNAS_ISOs] pfSense-CE-2.7.2-RELEASE-amd64.iso"
+  ]
+  // iso_url              = "http://lab.malicious.group/pfSense-CE-2.7.1-RELEASE-amd64.iso"
+  // iso_checksum         = "146d5fb7eb3dd070d898902eb418c292612363460d08bcadb43beb2670198fe2"
+  folder               = "GOAD/templates/pfsense/"
 
   network_adapters {
     network      = "VM Network"
     network_card = "vmxnet3"
   }
   network_adapters {
-    network      = "LAN"
+    network      = "GOAD"
     network_card = "vmxnet3"
   }
 
