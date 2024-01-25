@@ -58,12 +58,12 @@ class GOADBuilder(object):
         tf = Terraform("terraform/build_templates", terraform_bin_path="bin/terraform.exe")
         return_code, stdout, stderr = tf.init()
         if return_code != 0:
-            x = input(f"[x] An error was encountered. Do you want to see output? [Y/n]: ")
+            x = input("[x] An error was encountered. Do you want to see output? [Y/n]: ")
             if x.startswith(('Y', 'y', '')):
                 print(stderr)
-            raise AssertionError(f"Build encountered an error during 'init'\n")
+            raise AssertionError("Build encountered an error during 'init'\n")
         attempts = 0
-        while attempts <= 5:
+        while attempts <= 1:
             attempts += 1
             build_vars = {key: value["value"] for key, value in self.config.items()}
             return_code, stdout, stderr = tf.apply(
@@ -77,18 +77,18 @@ class GOADBuilder(object):
                 continue
             else:
                 return True
-        raise AssertionError(f"Build encountered an error during build_templates 'apply'")
+        raise AssertionError("Build encountered an error during build_templates 'apply'")
 
     def build_vms_from_templates(self) -> bool:
         tf = Terraform("terraform/clone_templates", terraform_bin_path="bin/terraform.exe")
         return_code, stdout, stderr = tf.init()
         if return_code != 0:
-            x = input(f"[x] An error was encountered. Do you want to see output? [Y/n]: ")
+            x = input("[x] An error was encountered. Do you want to see output? [Y/n]: ")
             if x.startswith(('Y', 'y', '')):
                 print(stderr)
-            raise AssertionError(f"Build encountered an error during 'init'\n")
+            raise AssertionError("Build encountered an error during 'init'\n")
         attempts = 0
-        while attempts <= 3:
+        while attempts <= 1:
             attempts += 1
             build_vars = {key: value["value"] for key, value in self.config.items()}
             return_code, stdout, stderr = tf.apply(
@@ -102,7 +102,7 @@ class GOADBuilder(object):
                 continue
             else:
                 return True
-        raise AssertionError(f"Build encountered an error during clone_templates 'apply'")
+        raise AssertionError("Build encountered an error during clone_templates 'apply'")
 
 
 if __name__ == '__main__':
