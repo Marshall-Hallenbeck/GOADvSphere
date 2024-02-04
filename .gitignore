@@ -6,6 +6,8 @@ terraform/build_templates/packer_cache/
 .*
 
 # Terraform
+terraform/clone_templates/terraform.tfstate
+terraform/clone_templates/terraform.tfstate.backup
 terraform/build_templates/terraform.tfstate
 terraform/build_templates/terraform.tfstate.backup
 
