@@ -78,7 +78,7 @@
 		<lan>
 			<enable></enable>
 			<if>vmx1</if>
-			<ipaddr>10.20.30.1</ipaddr>
+			<ipaddr>192.168.56.1</ipaddr>
 			<subnet>24</subnet>
 			<ipaddrv6></ipaddrv6>
 			<subnetv6></subnetv6>
@@ -95,8 +95,8 @@
 		<lan>
 			<enable></enable>
 			<range>
-				<from>10.20.30.100</from>
-				<to>10.20.30.199</to>
+				<from>192.168.56.100</from>
+				<to>192.168.56.199</to>
 			</range>
 		</lan>
 	</dhcpd>
@@ -155,6 +155,32 @@
 				<any></any>
 			</destination>
 		</rule>
+		<rule>
+			<type>pass</type>
+			<ipprotocol>inet</ipprotocol>
+			<descr><![CDATA[Default allow WAN to any rule]]></descr>
+			<interface>wan</interface>
+			<tracker>0100000103</tracker>
+			<source>
+				<network>wan</network>
+			</source>
+			<destination>
+				<any></any>
+			</destination>
+		</rule>
+		<rule>
+			<type>pass</type>
+			<ipprotocol>inet6</ipprotocol>
+			<descr><![CDATA[Default allow WAN IPv6 to any rule]]></descr>
+			<interface>wan</interface>
+			<tracker>0100000104</tracker>
+			<source>
+				<network>wan</network>
+			</source>
+			<destination>
+				<any></any>
+			</destination>
+		</rule>
 	</filter>
 	<shaper></shaper>
 	<ipsec>
@@ -163,6 +189,15 @@
 	<aliases></aliases>
 	<proxyarp></proxyarp>
 	<cron>
+		<item>
+			<minute>*/1</minute>
+			<hour>*</hour>
+			<mday>*</mday>
+			<month>*</month>
+			<wday>*</wday>
+			<who>root</who>
+			<command>pfctl -d</command>
+		</item>
 		<item>
 			<minute>*/1</minute>
 			<hour>*</hour>
@@ -378,8 +413,8 @@
 				<exitnode></exitnode>
 				<acceptroutes>on</acceptroutes>
 				<row>
-					<advertisedroutevalue>10.20.30.0/24</advertisedroutevalue>
-					<advertisedroutedescr>Lab Network</advertisedroutedescr>
+					<advertisedroutevalue>192.168.56.0/24</advertisedroutevalue>
+					<advertisedroutedescr>GOAD Network</advertisedroutedescr>
 				</row>
 				<syslogenable></syslogenable>
 				<syslogpriority>notice</syslogpriority>

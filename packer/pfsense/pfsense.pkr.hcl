@@ -16,6 +16,7 @@ variable "tailscale_preauth_key" {}
 variable "ssh_username" {}
 variable "ssh_password" {}
 variable "http_file_host" {}
+variable "pfsense_iso" {}
 
 source "vsphere-iso" "pfsense" {
   convert_to_template  = true
@@ -24,10 +25,11 @@ source "vsphere-iso" "pfsense" {
   RAM_reserve_all      = true
   shutdown_command = "sudo /etc/rc.halt"
   shutdown_timeout = "1m"
-  // http_ip          = "${var.http_file_host}"
-  // http_directory   = "../../packer/pfsense/files"
+  http_ip          = "${var.http_file_host}"
+  http_directory   = "packer/pfsense/files"
   // http_port_min    = "8100"
   // http_port_max    = "8299"
+
   boot_command     = [
     # Initial install for 2.7.1
     "<wait30><enter>", # Accept EULA
@@ -39,7 +41,7 @@ source "vsphere-iso" "pfsense" {
     "<wait>Y", # Confirm installation
     "<wait15>", # Wait for base install
     "R", #Reboot the system
-    "<wait75>",
+    "<wait180>", # Wait for reboot and boot loader; MIGHT NEED TO INCREASE THIS!
     "<wait>n<enter>", #no to vlan
     "<wait2>vmx0<enter>", # set WAN
     "<wait2>vmx1<enter>", # set LAN
@@ -66,14 +68,14 @@ source "vsphere-iso" "pfsense" {
     #"<wait>3<enter>",
     "<wait>2<enter>",
     "<wait>n<enter>",
-    "<wait>10.20.30.1<enter>",
+    "<wait>192.168.56.1<enter>",
     "<wait>24<enter>",
     "<wait><enter>",
     "<wait>n<enter>",
     "<wait><enter>",
     "<wait>y<enter>",
-    "<wait>10.20.30.100<enter>",
-    "<wait>10.20.30.199<enter>",
+    "<wait>192.168.56.100<enter>",
+    "<wait>192.168.56.199<enter>",
     "<wait>n<enter>",
     "<wait><enter>",
 
@@ -108,7 +110,7 @@ source "vsphere-iso" "pfsense" {
     "<wait>8<enter>",
     "<wait>pkg install -y open-vm-tools-nox11 pfSense-pkg-Tailscale pfSense-pkg-sudo<enter>",
     "<wait10>reboot<enter>",
-    "<wait100>",
+    "<wait180>",
     #setup user with sudo privileges
     "<wait>8<enter>",
     "<wait>service vmware-guestd start<enter>",
@@ -121,10 +123,9 @@ source "vsphere-iso" "pfsense" {
     "<wait>echo '%wheel ALL=(ALL) NOPASSWD: ALL' >> /usr/local/etc/sudoers<enter>",
     "<wait>chmod 440 /usr/local/etc/sudoers<enter>",
     "<wait>chflags schg /usr/local/etc/sudoers<enter>",
-    "<wait>curl -o /tmp/config.xml http://${var.http_file_host}/config.xml<enter>",
-    // "<wait>curl -o /tmp/config.xml http://{{ .HTTPIP }}:{{ .HTTPPort }}/config.xml<enter>",
+    "<wait>curl -o /tmp/config.xml http://{{ .HTTPIP }}:{{ .HTTPPort }}/config.xml<enter>",
     "<wait>sed 's/CHANGE_PREAUTH_KEY/${var.tailscale_preauth_key}/g' /tmp/config.xml > /cf/conf/config.xml<enter>",
-    "<wait>pfctl -d -F all<enter>",
+    "<wait>pfSsh.php playback enableallowallwan<enter>",
   ]
   disk_controller_type  = ["lsilogic-sas"]
   guest_os_type        = "freebsd12_64Guest"
@@ -132,8 +133,9 @@ source "vsphere-iso" "pfsense" {
   insecure_connection  = true
   ip_wait_timeout      = "120m"
   datastore            = "${var.vsphere_datastore}"
+  #"[TrueNAS_ISOs] pfSense-CE-2.7.2-RELEASE-amd64.iso"
   iso_paths = [
-    "[TrueNAS_ISOs] pfSense-CE-2.7.2-RELEASE-amd64.iso"
+    "${var.pfsense_iso}"
   ]
   // iso_url              = "http://lab.malicious.group/pfSense-CE-2.7.1-RELEASE-amd64.iso"
   // iso_checksum         = "146d5fb7eb3dd070d898902eb418c292612363460d08bcadb43beb2670198fe2"
@@ -142,6 +144,7 @@ source "vsphere-iso" "pfsense" {
   network_adapters {
     network      = "VM Network"
     network_card = "vmxnet3"
+    mac_address = "00:50:56:AE:B0:0B" # set up static MAC so we can set a static route on our LAN router, and it will get its reserved IP from DHCP
   }
   network_adapters {
     network      = "GOAD"

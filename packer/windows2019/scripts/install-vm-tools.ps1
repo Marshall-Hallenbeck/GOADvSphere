@@ -122,18 +122,24 @@ $ScriptLog = "c:\Admin\Build\WinPackerBuild-VMwareTools-$LogTimeStamp.txt"
 
 ### 1 - Set the current working directory to whichever drive corresponds to the mounted VMWare Tools installation ISO
 
-Set-Location e:
 
 ### 2 - Install attempt #1
 Write-CustomLog -ScriptLog $ScriptLog -Message "Starting VMware tools install first attempt 1" -Level INFO
 
-Start-Process "setup64.exe" -ArgumentList '/s /v "/qb REBOOT=R"' -Wait
+$driveLetter = (Get-WmiObject -Class Win32_CDROMDrive | Where-Object { $_.VolumeName -eq 'VMware Tools' }).Drive
+Set-Location -Path $driveLetter
+
+if (Test-Path "setup64.exe") {
+  Start-Process "setup64.exe" -ArgumentList '/s /v "/qb REBOOT=R"' -Wait
+} else {
+  Start-Process "setup.exe" -ArgumentList '/s /v "/qb REBOOT=R"' -Wait
+}
 
 ### 3 - After the installation is finished, check to see if the 'VMTools' service enters the 'Running' state every 2 seconds for 10 seconds
 $Running = $false
 $iRepeat = 0
 
-while (-not$Running -and $iRepeat -lt 5) {
+while (-not $Running -and $iRepeat -lt 5) {
 
   write-host "Pause for 2 seconds to check running state on VMware tools service" -ForegroundColor cyan 
   Start-Sleep -s 2
@@ -153,7 +159,7 @@ while (-not$Running -and $iRepeat -lt 5) {
 
 }
 ### 4 - If the service never enters the 'Running' state, re-install VMWare Tools
-if (-not$Running) {
+if (-not $Running) {
 
   #Uninstall VMWare Tools
   Write-CustomLog -ScriptLog $ScriptLog -Message "Running un-install on first attempt of VMware tools install" -Level WARN
@@ -177,14 +183,21 @@ if (-not$Running) {
   Write-CustomLog -ScriptLog $ScriptLog -Message "Running re-install of VMware tools install" -Level INFO
     
   #Install VMWare Tools
-  Start-Process "setup64.exe" -ArgumentList '/s /v "/qb REBOOT=R"' -Wait
+  $driveLetter = (Get-WmiObject -Class Win32_CDROMDrive | Where-Object { $_.VolumeName -eq 'VMware Tools' }).Drive
+Set-Location -Path $driveLetter
+
+  if (Test-Path "setup64.exe") {
+    Start-Process "setup64.exe" -ArgumentList '/s /v "/qb REBOOT=R"' -Wait
+  } else {
+    Start-Process "setup.exe" -ArgumentList '/s /v "/qb REBOOT=R"' -Wait
+  }
 
   ### 6 - Re-check again if VMTools service has been installed and is started
 
  Write-CustomLog -ScriptLog $ScriptLog -Message "Re-checking if VMTools service has been installed and is started" -Level INFO 
   
 $iRepeat = 0
-while (-not$Running -and $iRepeat -lt 5) {
+while (-not $Running -and $iRepeat -lt 5) {
 
     Start-Sleep -s 2
     $Service = Get-Service "VMTools" -ErrorAction SilentlyContinue
@@ -207,7 +220,7 @@ while (-not$Running -and $iRepeat -lt 5) {
 
   ### 7 If after the reinstall, the service is still not running, this is a failed deployment
 
-  IF (-not$Running) {
+  IF (-not $Running) {
     Write-CustomLog -ScriptLog $ScriptLog -Message "VMWare Tools is still not installed correctly. The packer automated deployment will not process any further until VMWare Tools is installed" -Level ERROR    
     
     Show-InstallationProgress -StatusMessage "VMWare Tools is still NOT installed correctly `n

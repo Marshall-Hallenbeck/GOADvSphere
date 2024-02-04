@@ -62,22 +62,16 @@ class GOADBuilder(object):
             if x.startswith(('Y', 'y', '')):
                 print(stderr)
             raise AssertionError("Build encountered an error during 'init'\n")
-        attempts = 0
-        while attempts <= 1:
-            attempts += 1
-            build_vars = {key: value["value"] for key, value in self.config.items()}
-            return_code, stdout, stderr = tf.apply(
-                skip_plan=True,
-                capture_output=False,
-                no_color=IsFlagged,
-                refresh=False,
-                var=build_vars)
-            if return_code != 0:
-                self.attention_print(f"[ Retry Number {attempts} ] - Trying again.")
-                continue
-            else:
-                return True
-        raise AssertionError("Build encountered an error during build_templates 'apply'")
+        
+        build_vars = {key: value["value"] for key, value in self.config.items()}
+        return_code, stdout, stderr = tf.apply(
+            skip_plan=True,
+            capture_output=False,
+            no_color=IsFlagged,
+            refresh=False,
+            var=build_vars)
+        if return_code != 0:
+            raise AssertionError("Build encountered an error during build_templates 'apply'")
 
     def build_vms_from_templates(self) -> bool:
         tf = Terraform("terraform/clone_templates", terraform_bin_path="bin/terraform.exe")
@@ -87,22 +81,16 @@ class GOADBuilder(object):
             if x.startswith(('Y', 'y', '')):
                 print(stderr)
             raise AssertionError("Build encountered an error during 'init'\n")
-        attempts = 0
-        while attempts <= 1:
-            attempts += 1
-            build_vars = {key: value["value"] for key, value in self.config.items()}
-            return_code, stdout, stderr = tf.apply(
-                skip_plan=True,
-                capture_output=False,
-                no_color=IsFlagged,
-                refresh=False,
-                var=build_vars)
-            if return_code != 0:
-                self.attention_print(f"[ Retry Number {attempts} ] - Trying again.")
-                continue
-            else:
-                return True
-        raise AssertionError("Build encountered an error during clone_templates 'apply'")
+        
+        build_vars = {key: value["value"] for key, value in self.config.items()}
+        return_code, stdout, stderr = tf.apply(
+            skip_plan=True,
+            capture_output=False,
+            no_color=IsFlagged,
+            refresh=False,
+            var=build_vars)
+        if return_code != 0:
+            raise AssertionError("Build encountered an error during clone_templates 'apply'")
 
 
 if __name__ == '__main__':

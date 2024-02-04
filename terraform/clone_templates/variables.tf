@@ -30,3 +30,19 @@ variable "tailscale_preauth_key" {
   description = "The Tailscale pre-auth key used to connect the lab for remote use."
   type        = string
 }
+variable "pfsense_iso" {
+  description = "The path to the pfSense ISO file."
+  type        = string
+}
+variable "ubuntu_iso" {
+  description = "The path to the Ubuntu ISO file."
+  type        = string
+}
+variable "windows2016_iso" {
+  description = "The path to the Windows 2016 ISO file."
+  type        = string
+}
+variable "windows2019_iso" {
+  description = "The path to the Windows 2019 ISO file."
+  type        = string
+}
