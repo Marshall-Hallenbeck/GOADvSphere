@@ -24,11 +24,27 @@
     "value": ""
   },
   "http_file_host": {
-    "description": "The IP address of your provisioning machine [this machine] (i.e. 192.168.1.x)",
+    "description": "The IP address of where the files are served over HTTP for pfsense and ubuntu hosts",
     "value": ""
   },
   "tailscale_preauth_key": {
     "description": "[Optional] - Tailscale Pre-Authentication key",
+    "value": ""
+  },
+  "pfsense_iso": {
+    "description": "Path to the pfSense ISO, e.g. [ISOs] pfSense-CE-2.7.2-RELEASE-amd64.iso",
+    "value": ""
+  },
+  "ubuntu_iso": {
+    "description": "Path to the Ubuntu ISO, e.g. [ISOs] Linux/Ubuntu/ubuntu-22.04.3-live-server-amd64.iso",
+    "value": ""
+  },
+  "windows2016_iso": {
+    "description": "Path to the Windows 2016 ISO, e.g. [ISOs] Windows/Server 2016/Windows_Server_2016_Datacenter_EVAL_en-us_14393_refresh.ISO",
+    "value": ""
+  },
+  "windows2019_iso": {
+    "description": "Path to the Windows 2019 ISO, e.g. [ISOs] Windows/Server 2019/17763.3650.221105-1748.rs5_release_svc_refresh_SERVER_EVAL_x64FRE_en-us.iso",
     "value": ""
   }
 }

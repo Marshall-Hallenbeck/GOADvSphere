@@ -1,0 +1,14 @@
+{
+    "vsphere_server": "",
+    "vsphere_username": "",
+    "vsphere_password": "",
+    "vsphere_esxi_host": "",
+    "vsphere_datacenter": "",
+    "vsphere_datastore": "",
+    "http_file_host": "",
+    "tailscale_preauth_key": "",
+    "pfsense_iso": "",
+    "ubuntu_iso": "",
+    "windows2016_iso": "",
+    "windows2019_iso": ""
+  }
