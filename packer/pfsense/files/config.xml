@@ -5,7 +5,7 @@
 	<system>
 		<optimization>normal</optimization>
 		<hostname>pfSense</hostname>
-		<domain>home.arpa</domain>
+		<domain>sevenkingdoms.local</domain>
 		<dnsallowoverride></dnsallowoverride>
 		<group>
 			<name>all</name>
@@ -61,19 +61,9 @@
 			<enable></enable>
 			<if>vmx0</if>
 			<mtu></mtu>
-			<ipaddr>dhcp</ipaddr>
-			<ipaddrv6></ipaddrv6>
-			<subnet></subnet>
-			<gateway></gateway>
-			<blockpriv></blockpriv>
-			<blockbogons></blockbogons>
-			<dhcphostname></dhcphostname>
-			<media></media>
-			<mediaopt></mediaopt>
-			<dhcp6-duid></dhcp6-duid>
-			<dhcp6-ia-pd-len>0</dhcp6-ia-pd-len>
-			<subnetv6></subnetv6>
-			<gatewayv6></gatewayv6>
+			<ipaddr>192.168.8.227</ipaddr>
+			<subnet>24</subnet>
+			<gateway>WANGW</gateway>
 		</wan>
 		<lan>
 			<enable></enable>
@@ -196,15 +186,6 @@
 			<month>*</month>
 			<wday>*</wday>
 			<who>root</who>
-			<command>pfctl -d</command>
-		</item>
-		<item>
-			<minute>*/1</minute>
-			<hour>*</hour>
-			<mday>*</mday>
-			<month>*</month>
-			<wday>*</wday>
-			<who>root</who>
 			<command>/usr/sbin/newsyslog</command>
 		</item>
 		<item>
@@ -315,7 +296,17 @@
 		<time>1703007158</time>
 		<username><![CDATA[admin@192.168.1.165 (Local Database)]]></username>
 	</revision>
-	<gateways></gateways>
+	<gateways>
+		<gateway_item>
+			<interface>wan</interface>
+			<name>WANGW</name>
+			<weight></weight>
+			<ipprotocol>inet</ipprotocol>
+			<descr>Upstream Gateway for WAN</descr>
+			<gw_down_kill_states></gw_down_kill_states>
+		</gateway_item>
+		<defaultgw4>WANGW
+	</gateways>
 	<captiveportal></captiveportal>
 	<dnsmasq></dnsmasq>
 	<ntpd>

@@ -57,13 +57,13 @@ source "vsphere-iso" "ubuntu" {
   // iso_url              = "http://lab.malicious.group/ubuntu-22.04.iso"
   // iso_checksum         = "5e38b55d57d94ff029719342357325ed3bda38fa80054f9330dc789cd2d43931"
 
-  network_adapters {
-    network      = "GOAD"
-    network_card = "vmxnet3"
-  }
   # we connect to the VM Network for the Packer build so it can get an IP address for setup
   network_adapters {
     network   = "VM Network"
+    network_card = "vmxnet3"
+  }
+  network_adapters {
+    network      = "GOAD"
     network_card = "vmxnet3"
   }
   password     = "${var.vsphere_password}"

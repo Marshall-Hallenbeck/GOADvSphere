@@ -97,7 +97,7 @@
             </AutoLogon>
 
             <FirstLogonCommands>
- <SynchronousCommand wcm:action="add">
+                <SynchronousCommand wcm:action="add">
                     <CommandLine>cmd.exe /c powershell -Command "Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Force"</CommandLine>
                     <Description>Set Execution Policy 64 Bit</Description>
                     <Order>1</Order>
@@ -116,17 +116,17 @@
                     <RequiresUserInput>true</RequiresUserInput>
                 </SynchronousCommand>
                 <SynchronousCommand wcm:action="add">
-                    <CommandLine>cmd.exe /c C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -File a:\fixnetwork.ps1</CommandLine>
+                    <CommandLine>cmd.exe /c C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -File a:\fix-network.ps1</CommandLine>
                     <Description>Fix public network</Description>
                     <Order>4</Order>
                     <RequiresUserInput>true</RequiresUserInput>
                 </SynchronousCommand>
-                <SynchronousCommand wcm:action="add">
+                <!-- <SynchronousCommand wcm:action="add">
                     <CommandLine>C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -File a:\disable-winrm.ps1</CommandLine>
                     <Description>Disable WinRM</Description>
                     <Order>5</Order>
                     <RequiresUserInput>true</RequiresUserInput>
-                </SynchronousCommand>
+                </SynchronousCommand> -->
                 <SynchronousCommand wcm:action="add">
                     <CommandLine>%SystemRoot%\System32\reg.exe ADD HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced\ /v HideFileExt /t REG_DWORD /d 0 /f</CommandLine>
                     <Order>6</Order>
@@ -137,13 +137,6 @@
                     <Order>7</Order>
                     <Description>Enable QuickEdit mode</Description>
                 </SynchronousCommand>
-                <!--
-                <SynchronousCommand wcm:action="add">
-                    <CommandLine>cmd.exe /c a:\install-vm-tools.cmd</CommandLine>
-                    <Order>8</Order>
-                    <Description>Install VMware Tools</Description>
-                </SynchronousCommand>
-                -->
                 <SynchronousCommand wcm:action="add">
                     <CommandLine>C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -File a:\install-vm-tools.ps1</CommandLine>
                     <Order>8</Order>
@@ -192,18 +185,23 @@
                  <SynchronousCommand wcm:action="add">
                     <CommandLine>powershell -NoProfile -ExecutionPolicy Bypass -Command "a:\Install-WMF3Hotfix.ps1"</CommandLine>
                     <Description>Install-WMF3Hotfix.ps1</Description>
-                    <Order>97</Order>
+                    <Order>95</Order>
                 </SynchronousCommand>
                 <!-- no updates -->
                 <SynchronousCommand wcm:action="add">
                     <CommandLine>powershell -NoProfile -ExecutionPolicy Bypass -Command "a:\ConfigureRemotingForAnsible.ps1"</CommandLine>
                     <Description>ConfigureRemotingForAnsible</Description>
-                    <Order>98</Order>
+                    <Order>96</Order>
                 </SynchronousCommand>
                 <SynchronousCommand wcm:action="add">
                     <CommandLine>cmd.exe /c C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -File a:\enable-winrm.ps1</CommandLine>
                     <Description>Enable WinRM</Description>
-                    <Order>99</Order>
+                    <Order>97</Order>
+                </SynchronousCommand>
+                <SynchronousCommand wcm:action="add">
+                    <Order>98</Order>
+                    <CommandLine>powershell -NoProfile -ExecutionPolicy Bypass -Command "Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled False"</CommandLine>
+                    <Description>Disable Firewall</Description>
                 </SynchronousCommand>
             </FirstLogonCommands>
             <OOBE>
@@ -223,7 +221,7 @@
                 <LocalAccounts>
                     <LocalAccount wcm:action="add">
                         <Password>
-                            <Value>bQxXr88TqNf5Szh</Value>
+                            <Value>Passw0rd!</Value>
                             <PlainText>true</PlainText>
                         </Password>
                         <Group>administrators</Group>

@@ -22,12 +22,14 @@ source "vsphere-iso" "windows2019" {
   RAM_reserve_all      = true
   floppy_files = [
     "packer/windows2019/files/autounattend.xml",
-    "packer/windows2019/scripts/disable-network-discovery.cmd",
-    "packer/windows2019/scripts/disable-winrm.ps1",
-    "packer/windows2019/scripts/enable-winrm.ps1",
-    "packer/windows2019/scripts/install-vm-tools.ps1",
-    "packer/windows2019/scripts/ConfigureRemotingForAnsible.ps1",
-    "packer/windows2019/scripts/Install-WMF3Hotfix.ps1"
+    "packer/scripts/windows/fix-network.ps1",
+    "packer/scripts/windows/enable-winrm.ps1",
+    // "packer/scripts/windows/disable-firewall.ps1", // done in autounattend.xml
+    // "packer/scripts/disable-network-discovery.cmd",
+    // "packer/scripts/disable-winrm.ps1",
+    "packer/scripts/windows/install-vm-tools.ps1",
+    "packer/scripts/windows/ConfigureRemotingForAnsible.ps1",
+    "packer/scripts/windows/Install-WMF3Hotfix.ps1"
   ]
   guest_os_type        = "windows9Server64Guest"
   host                 = "${var.vsphere_esxi_host}"

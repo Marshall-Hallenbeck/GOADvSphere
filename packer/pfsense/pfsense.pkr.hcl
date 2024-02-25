@@ -48,24 +48,31 @@ source "vsphere-iso" "pfsense" {
     "<wait2>y<enter>", # are you sure
     "<wait100>",
 
-    # Set IP assignments for LAN
-    # "<wait>2<enter>",
-    # "<wait>2<enter>",
-    # "<wait>n<enter>",
-    # "<wait>10.10.10.1<enter>",
-    # "<wait>24<enter>",
-    # "<wait><enter>",
-    # "<wait>n<enter>",
-    # "<wait><enter>",
-    # "<wait>y<enter>",
-    # "<wait>10.10.10.100<enter>",
-    # "<wait>10.10.10.199<enter>",
-    # "<wait5>n<enter>",
-    # "<wait><enter>",
+    # setup dynamic IP for WAN
+    // "<wait>2<enter>",
+    // "<wait>1<enter>",
+    // "<wait>y<enter>",
+    // "<wait>n<enter>",
+    // "<wait><enter>",
+    // "<wait>n<enter>",
+    // "<wait><enter>",
+    
+    # setup static IP for WAN
+    "<wait>2<enter>",
+    "<wait>1<enter>",
+    "<wait>n<enter>",
+    "<wait>192.168.8.227<enter>",
+    "<wait>24<enter>",
+    "<wait>192.168.8.1<enter>",
+    "<wait>y<enter>",
+    "<wait>n<enter>",
+    "<wait><enter>",
+    "<wait>n<enter>",
+    "<wait>n<enter>",
+    "<wait><enter>",
 
-    # Set IP assignment for OPT1
+    # Set IP assignment for LAN
     "<wait10>2<enter>",
-    #"<wait>3<enter>",
     "<wait>2<enter>",
     "<wait>n<enter>",
     "<wait>192.168.56.1<enter>",
@@ -78,29 +85,6 @@ source "vsphere-iso" "pfsense" {
     "<wait>192.168.56.199<enter>",
     "<wait>n<enter>",
     "<wait><enter>",
-
-    # setup dynamic IP for WAN
-    "<wait>2<enter>",
-    "<wait>1<enter>",
-    "<wait>y<enter>",
-    "<wait>n<enter>",
-    "<wait><enter>",
-    "<wait>n<enter>",
-    "<wait><enter>",
-
-    # setup static IP for WAN
-    # "<wait>2<enter>",
-    # "<wait>1<enter>",
-    # "<wait>n<enter>",
-    # "<wait>192.168.1.234<enter>",
-    # "<wait>24<enter>",
-    # "<wait>192.168.1.1<enter>",
-    # "<wait>y<enter>",
-    # "<wait>n<enter>",
-    # "<wait><enter>",
-    # "<wait>n<enter>",
-    # "<wait>n<enter>",
-    # "<wait><enter>",
 
     #enable sshd
     "<wait30>14<enter>",
@@ -144,7 +128,6 @@ source "vsphere-iso" "pfsense" {
   network_adapters {
     network      = "VM Network"
     network_card = "vmxnet3"
-    mac_address = "00:50:56:AE:B0:0B" # set up static MAC so we can set a static route on our LAN router, and it will get its reserved IP from DHCP
   }
   network_adapters {
     network      = "GOAD"
