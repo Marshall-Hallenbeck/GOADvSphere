@@ -4,15 +4,15 @@ resource "random_string" "administrator_password" {
 }
 variable "server_2019_instances" {
   default = {
-    "DC01"  = { name = "DC-01", ip_address = "192.168.56.10" }
-    "DC02"  = { name = "DC-02", ip_address = "192.168.56.11" }
-    "SRV02" = { name = "SRV-02", ip_address = "192.168.56.22" }
+    "DC01"  = { name = "DC-01", ip_address = "192.168.56.10", ipv4_gateway = "192.168.56.1" }
+    "DC02"  = { name = "DC-02", ip_address = "192.168.56.11", ipv4_gateway = "192.168.56.1" }
+    "SRV02" = { name = "SRV-02", ip_address = "192.168.56.22", ipv4_gateway = "192.168.56.1" }
   }
 }
 variable "server_2016_instances" {
   default = {
-    "DC03"  = { name = "DC-03", ip_address = "192.168.56.12" }
-    "SRV03" = { name = "SRV-03", ip_address = "192.168.56.23" }
+    "DC03"  = { name = "DC-03", ip_address = "192.168.56.12", ipv4_gateway = "192.168.56.1" }
+    "SRV03" = { name = "SRV-03", ip_address = "192.168.56.23", ipv4_gateway = "192.168.56.1" }
   }
 }
 resource "vsphere_virtual_machine" "ubuntu-jumpbox" {
@@ -23,6 +23,7 @@ resource "vsphere_virtual_machine" "ubuntu-jumpbox" {
     vsphere_virtual_machine.vms-2019
   ]
   name             = "Ubuntu"
+  folder           = "GOAD"
   resource_pool_id = data.vsphere_resource_pool.pool.id
   datastore_id     = data.vsphere_datastore.datastore.id
   num_cpus         = data.vsphere_virtual_machine.ubuntu_template.num_cpus
@@ -67,6 +68,7 @@ resource "vsphere_virtual_machine" "ubuntu-jumpbox" {
 resource "vsphere_virtual_machine" "pfsense" {
   depends_on       = [data.vsphere_virtual_machine.pfsense_template]
   name             = "pfSense"
+  folder           = "GOAD"
   resource_pool_id = data.vsphere_resource_pool.pool.id
   datastore_id     = data.vsphere_datastore.datastore.id
   num_cpus         = data.vsphere_virtual_machine.pfsense_template.num_cpus
@@ -76,14 +78,14 @@ resource "vsphere_virtual_machine" "pfsense" {
   wait_for_guest_net_routable = false
 
   network_interface {
-    network_id   = data.vsphere_network.GOAD.id
+    network_id   = data.vsphere_network.VM_Network.id
     adapter_type = "vmxnet3"
   }
   network_interface {
-    network_id   = data.vsphere_network.VM_Network.id
+    network_id   = data.vsphere_network.GOAD.id
     adapter_type = "vmxnet3"
-    mac_address = "00:50:56:AE:B0:0B" # set up static MAC so we can set a static route on our LAN router, and it will get its reserved IP from DHCP
   }
+
   disk {
     label            = "disk0"
     size             = 32768
@@ -100,12 +102,15 @@ resource "vsphere_virtual_machine" "vms-2019" {
     vsphere_virtual_machine.pfsense
   ]
   name             = "${each.value.name}"
+  folder           = "GOAD"
   resource_pool_id = data.vsphere_resource_pool.pool.id
   datastore_id     = data.vsphere_datastore.datastore.id
   num_cpus         = data.vsphere_virtual_machine.server2019_template.num_cpus
   memory           = data.vsphere_virtual_machine.server2019_template.memory
   guest_id         = data.vsphere_virtual_machine.server2019_template.guest_id
   scsi_type        = data.vsphere_virtual_machine.server2019_template.scsi_type
+  #wait_for_guest_net_routable = false
+
   network_interface {
     network_id   = data.vsphere_network.GOAD.id
     adapter_type = "vmxnet3"
@@ -120,6 +125,7 @@ resource "vsphere_virtual_machine" "vms-2019" {
     timeout = "120"
 
     customize {
+      timeout = 300
       windows_options {
         computer_name  = each.value.name
         admin_password = random_string.administrator_password.result
@@ -128,7 +134,7 @@ resource "vsphere_virtual_machine" "vms-2019" {
         ipv4_address    = each.value.ip_address
         ipv4_netmask    = "24"
       }
-      dns_server_list = ["192.168.56.1", "127.0.0.1"]
+      dns_server_list = ["192.168.56.1"]
       ipv4_gateway = "192.168.56.1"
     }
   }
@@ -140,12 +146,15 @@ resource "vsphere_virtual_machine" "vms-2016" {
     vsphere_virtual_machine.pfsense
   ]
   name             = "${each.value.name}"
+  folder           = "GOAD"
   resource_pool_id = data.vsphere_resource_pool.pool.id
   datastore_id     = data.vsphere_datastore.datastore.id
   num_cpus         = data.vsphere_virtual_machine.server2016_template.num_cpus
   memory           = data.vsphere_virtual_machine.server2016_template.memory
   guest_id         = data.vsphere_virtual_machine.server2016_template.guest_id
   scsi_type        = data.vsphere_virtual_machine.server2016_template.scsi_type
+  #wait_for_guest_net_routable = false
+
   network_interface {
     network_id   = data.vsphere_network.GOAD.id
     adapter_type = "vmxnet3"
@@ -160,6 +169,7 @@ resource "vsphere_virtual_machine" "vms-2016" {
     timeout = "120"
 
     customize {
+      timeout = 300
       windows_options {
         computer_name  = each.value.name
         admin_password = random_string.administrator_password.result
