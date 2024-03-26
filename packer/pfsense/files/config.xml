@@ -79,6 +79,16 @@
 			<gateway></gateway>
 			<gatewayv6></gatewayv6>
 		</lan>
+		<opt1>
+			<enable></enable>
+			<if>vmx2</if>
+			<ipaddr>192.168.33.1</ipaddr>
+			<subnet>24</subnet>
+			<gateway></gateway>
+			<ipaddrv6></ipaddrv6>
+			<subnetv6></subnetv6>
+			<gatewayv6></gatewayv6>
+		</opt1>
 	</interfaces>
 	<staticroutes></staticroutes>
 	<dhcpd>

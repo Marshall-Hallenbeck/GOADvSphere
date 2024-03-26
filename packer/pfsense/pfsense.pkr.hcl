@@ -12,7 +12,7 @@ variable "vsphere_username" {}
 variable "vsphere_password" {}
 variable "vsphere_esxi_host" {}
 variable "vsphere_datastore" {}
-variable "tailscale_preauth_key" {}
+// variable "tailscale_preauth_key" {}
 variable "ssh_username" {}
 variable "ssh_password" {}
 variable "http_file_host" {}
@@ -45,6 +45,7 @@ source "vsphere-iso" "pfsense" {
     "<wait>n<enter>", #no to vlan
     "<wait2>vmx0<enter>", # set WAN
     "<wait2>vmx1<enter>", # set LAN
+    "<wait2>vmx2<enter>", # set OPT1
     "<wait2>y<enter>", # are you sure
     "<wait100>",
 
@@ -71,7 +72,7 @@ source "vsphere-iso" "pfsense" {
     "<wait>n<enter>",
     "<wait><enter>",
 
-    # Set IP assignment for LAN
+    # Set IP assignment for GOAD LAN
     "<wait10>2<enter>",
     "<wait>2<enter>",
     "<wait>n<enter>",
@@ -83,6 +84,18 @@ source "vsphere-iso" "pfsense" {
     "<wait>y<enter>",
     "<wait>192.168.56.100<enter>",
     "<wait>192.168.56.199<enter>",
+    "<wait>n<enter>",
+    "<wait><enter>",
+    # Set IP assignment for SCCM LAN
+    "<wait>2<enter>", // Select the option to assign a new interface
+    "<wait>3<enter>", // Select OPT 1
+    "<wait>n<enter>",
+    "<wait>192.168.33.1<enter>", // Specify the IP address for the new interface
+    "<wait>24<enter>",
+    "<wait><enter>",
+    "<wait>n<enter>",
+    "<wait><enter>",
+    "<wait>n<enter>",
     "<wait>n<enter>",
     "<wait><enter>",
 
@@ -107,8 +120,9 @@ source "vsphere-iso" "pfsense" {
     "<wait>echo '%wheel ALL=(ALL) NOPASSWD: ALL' >> /usr/local/etc/sudoers<enter>",
     "<wait>chmod 440 /usr/local/etc/sudoers<enter>",
     "<wait>chflags schg /usr/local/etc/sudoers<enter>",
-    "<wait>curl -o /tmp/config.xml http://{{ .HTTPIP }}:{{ .HTTPPort }}/config.xml<enter>",
-    "<wait>sed 's/CHANGE_PREAUTH_KEY/${var.tailscale_preauth_key}/g' /tmp/config.xml > /cf/conf/config.xml<enter>",
+    // only needed for tailscale config
+    // "<wait>curl -o /tmp/config.xml http://{{ .HTTPIP }}:{{ .HTTPPort }}/config.xml<enter>",
+    // "<wait>sed 's/CHANGE_PREAUTH_KEY/${var.tailscale_preauth_key}/g' /tmp/config.xml > /cf/conf/config.xml<enter>",
     "<wait>pfSsh.php playback enableallowallwan<enter>",
   ]
   disk_controller_type  = ["lsilogic-sas"]
@@ -127,6 +141,10 @@ source "vsphere-iso" "pfsense" {
 
   network_adapters {
     network      = "VM Network"
+    network_card = "vmxnet3"
+  }
+  network_adapters {
+    network      = "GOAD"
     network_card = "vmxnet3"
   }
   network_adapters {
