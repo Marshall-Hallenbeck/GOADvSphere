@@ -6,11 +6,5 @@ terraform/build_templates/packer_cache/
 .*
 
 # Terraform
-terraform/clone_templates/terraform.tfstate
-terraform/clone_templates/terraform.tfstate.backup
-terraform/build_templates/terraform.tfstate
-terraform/build_templates/terraform.tfstate.backup
-
-# Bins
-bin/packer_1.10.0_windows_amd64.zip
-bin/terraform_1.6.6_windows_amd64.zip
+terraform.tfstate
+terraform.tfstate.backup

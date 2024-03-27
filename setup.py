@@ -50,12 +50,12 @@ class GOADBuilder(object):
         for variable in self.config:
             if not self.config[variable]["value"]:
                 self.config[variable]["value"] = input(f"--=[ CONFIG ]: {self.config[variable]['description']}: ")
-        if self.config["tailscale_preauth_key"]["value"] == "":
-            self.config["tailscale_preauth_key"]["value"] = "none"
+        # if self.config["tailscale_preauth_key"]["value"] == "":
+        #     self.config["tailscale_preauth_key"]["value"] = "none"
         return self._return_json_from_dict(self.config, "config.json")
 
     def build_templates_from_iso(self) -> bool:
-        tf = Terraform("terraform/build_templates", terraform_bin_path="bin/terraform.exe")
+        tf = Terraform("terraform/build_templates")
         return_code, stdout, stderr = tf.init()
         if return_code != 0:
             x = input("[x] An error was encountered. Do you want to see output? [Y/n]: ")
@@ -73,8 +73,8 @@ class GOADBuilder(object):
         if return_code != 0:
             raise AssertionError("Build encountered an error during build_templates 'apply'")
 
-    def build_vms_from_templates(self) -> bool:
-        tf = Terraform("terraform/clone_templates", terraform_bin_path="bin/terraform.exe")
+    def build_vms_from_templates(self, template_path) -> bool:
+        tf = Terraform(template_path)
         return_code, stdout, stderr = tf.init()
         if return_code != 0:
             x = input("[x] An error was encountered. Do you want to see output? [Y/n]: ")
@@ -98,6 +98,8 @@ if __name__ == '__main__':
         setup_goad_v2 = GOADBuilder("config.json")
         setup_goad_v2.parse_configuration()
         setup_goad_v2.build_templates_from_iso()
-        setup_goad_v2.build_vms_from_templates()
+        setup_goad_v2.build_vms_from_templates("terraform/clone_goad")
+        setup_goad_v2.build_vms_from_templates("terraform/clone_sccm")
+
     except AssertionError as e:
         print(f"--=[ FATAL ERROR] - {e.__str__()}")

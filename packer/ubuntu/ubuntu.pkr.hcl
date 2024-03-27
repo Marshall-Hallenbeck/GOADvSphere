@@ -84,7 +84,7 @@ build {
   sources = ["source.vsphere-iso.ubuntu"]
 
   provisioner "file" {
-    source = "packer/ubuntu/files/cookbook.zip"
+    source = "packer/ubuntu/files/goad-cookbook.zip"
     destination = "/home/ansible/cookbook.zip"
   }
 }

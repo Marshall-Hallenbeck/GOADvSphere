@@ -26,10 +26,10 @@ variable "http_file_host" {
   description = "The IP address of your provisioning machine (i.e. 192.168.1.x)"
   type        = string
 }
-variable "tailscale_preauth_key" {
-  description = "The Tailscale pre-auth key used to connect the lab for remote use."
-  type        = string
-}
+# variable "tailscale_preauth_key" {
+#   description = "The Tailscale pre-auth key used to connect the lab for remote use."
+#   type        = string
+# }
 variable "pfsense_iso" {
   description = "The path to the pfSense ISO file."
   type        = string

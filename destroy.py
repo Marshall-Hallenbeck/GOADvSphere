@@ -24,8 +24,8 @@ class GOADDestroyer(object):
         for variable in self.config:
             if not self.config[variable]["value"]:
                 self.config[variable]["value"] = input(f"--=[ CONFIG ]: {self.config[variable]['description']}: ")
-        if self.config["tailscale_preauth_key"]["value"] == "":
-            self.config["tailscale_preauth_key"]["value"] = "none"
+        # if self.config["tailscale_preauth_key"]["value"] == "":
+        #     self.config["tailscale_preauth_key"]["value"] = "none"
 
     def destroy_vms_from_vsphere(self) -> bool:
         a = self.config
@@ -39,8 +39,9 @@ class GOADDestroyer(object):
                       f"-var vsphere_datacenter={a['vsphere_datacenter']['value']} " \
                       f"-var vsphere_datastore={a['vsphere_datastore']['value']} " \
                       f"-var http_file_host={a['http_file_host']['value']} "\
-                      f"-var tailscale_preauth_key={a['tailscale_preauth_key']['value']} " \
                       f"--auto-approve"
+        #                      f"-var tailscale_preauth_key={a['tailscale_preauth_key']['value']} " \
+
         result = subprocess.run(destroy_vms, shell=True, check=True, stdout=subprocess.PIPE, text=True)
         if result.returncode != 0:
             print(f"[x] Failed to destroy\n{result.stderr}")
@@ -60,8 +61,9 @@ class GOADDestroyer(object):
                       f"-var vsphere_datacenter={a['vsphere_datacenter']['value']} " \
                       f"-var vsphere_datastore={a['vsphere_datastore']['value']} " \
                       f"-var http_file_host={a['http_file_host']['value']} "\
-                      f"-var tailscale_preauth_key={a['tailscale_preauth_key']['value']} " \
                       f"--auto-approve"
+        #f"-var tailscale_preauth_key={a['tailscale_preauth_key']['value']} " \
+
         result = subprocess.run(destroy_vms, shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         if result.returncode != 0:
             print(f"[x] Failed to destroy\n{result.stderr}")

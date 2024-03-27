@@ -19,12 +19,6 @@ resource "vsphere_host_port_group" "GOAD" {
   virtual_switch_name = "vSwitch1"  // directly use the name of the existing vSwitch
 }
 
-# Uncomment this resource if you want terraform to completely manage your compute cluster
-# resource "vsphere_compute_cluster" "compute_cluster" {
-#   name                = "GOAD_Cluster"
-#   datacenter_id       = data.vsphere_datacenter.dc.id
-# }
-
 resource "terraform_data" "pfsense_builder" {
   triggers_replace = {
     vsphere_server   = var.vsphere_server
