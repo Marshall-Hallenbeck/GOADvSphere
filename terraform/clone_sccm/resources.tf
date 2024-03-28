@@ -10,90 +10,11 @@ variable "goad_sccm_2019" {
     "SCCM-CLIENT" = { name = "SCCM-CLIENT", ip_address = "192.168.33.13", ipv4_gateway = "192.168.33.1" }
   }
 }
-resource "vsphere_virtual_machine" "ubuntu-jumpbox" {
-  depends_on       = [
-    data.vsphere_virtual_machine.ubuntu_template,
-    vsphere_virtual_machine.pfsense,
-    vsphere_virtual_machine.vms-2019
-  ]
-  name             = "Ubuntu"
-  folder           = "GOAD/SCCM/"
-  resource_pool_id = data.vsphere_resource_pool.pool.id
-  datastore_id     = data.vsphere_datastore.datastore.id
-  num_cpus         = data.vsphere_virtual_machine.ubuntu_template.num_cpus
-  memory           = data.vsphere_virtual_machine.ubuntu_template.memory
-  guest_id         = data.vsphere_virtual_machine.ubuntu_template.guest_id
-  scsi_type        = data.vsphere_virtual_machine.ubuntu_template.scsi_type
-  wait_for_guest_net_routable = false
-
-  network_interface {
-    network_id   = data.vsphere_network.VM_Network.id
-    adapter_type = "vmxnet3"
-  }
-  network_interface {
-    network_id   = data.vsphere_network.GOAD.id
-    adapter_type = "vmxnet3"
-  }
-  disk {
-    label            = "disk0"
-    size             = 32768
-    thin_provisioned = true
-  }
-  clone {
-    template_uuid = data.vsphere_virtual_machine.ubuntu_template.id
-  }
-  provisioner "remote-exec" {
-    inline = [
-      "sudo apt-get update",
-      "sudo apt install -y python3 python3-pip unzip net-tools",
-      "sudo pip3 install ansible-core==2.12.6",
-      "sudo pip3 install pywinrm",
-      "unzip /home/ansible/cookbook.zip",
-      "cd ansible && ansible-galaxy install -r requirements.yml",
-    ]
-    connection {
-      type        = "ssh"
-      host        = self.default_ip_address
-      user        = "ansible"
-      password    = "ansible"
-    }
-  }
-}
-# resource "vsphere_virtual_machine" "pfsense" {
-#   depends_on       = [data.vsphere_virtual_machine.pfsense_template]
-#   name             = "pfSense"
-#   folder           = "GOAD"
-#   resource_pool_id = data.vsphere_resource_pool.pool.id
-#   datastore_id     = data.vsphere_datastore.datastore.id
-#   num_cpus         = data.vsphere_virtual_machine.pfsense_template.num_cpus
-#   memory           = data.vsphere_virtual_machine.pfsense_template.memory
-#   guest_id         = data.vsphere_virtual_machine.pfsense_template.guest_id
-#   scsi_type        = data.vsphere_virtual_machine.pfsense_template.scsi_type
-#   wait_for_guest_net_routable = false
-
-#   network_interface {
-#     network_id   = data.vsphere_network.VM_Network.id
-#     adapter_type = "vmxnet3"
-#   }
-#   network_interface {
-#     network_id   = data.vsphere_network.GOAD.id
-#     adapter_type = "vmxnet3"
-#   }
-
-#   disk {
-#     label            = "disk0"
-#     size             = 32768
-#     thin_provisioned = true
-#   }
-#   clone {
-#     template_uuid = data.vsphere_virtual_machine.pfsense_template.id
-#   }
-# }
 resource "vsphere_virtual_machine" "vms-2019" {
   for_each         = var.goad_sccm_2019
   depends_on       = [
     data.vsphere_virtual_machine.server2019_template, 
-    vsphere_virtual_machine.pfsense
+    data.vsphere_virtual_machine.pfsense
   ]
   name             = "${each.value.name}"
   folder           = "GOAD/SCCM/"
@@ -135,20 +56,22 @@ resource "vsphere_virtual_machine" "vms-2019" {
 }
 
 resource "null_resource" "run_ansible" {
-  depends_on = [vsphere_virtual_machine.ubuntu-jumpbox]
+  depends_on = [data.vsphere_virtual_machine.ubuntu-jumpbox]
   triggers = {
-    vm_id = vsphere_virtual_machine.ubuntu-jumpbox.id
+    vm_id = data.vsphere_virtual_machine.ubuntu-jumpbox.id
   }
   provisioner "remote-exec" {
     inline = [
       "sudo ifconfig ens224 up",
       "sudo dhclient ens224",
-      "export ANSIBLE_COMMAND=\"ansible-playbook -i ../ad/GOAD/SCCM/data/inventory -i ../ad/GOAD/SCCM/providers/vsphere/inventory\"",
-      "cd ansible && chmod +x ./scripts/provision.sh && ./scripts/provision.sh"
+      "export LAB=SCCM",
+      "export PROVIDER=vsphere",
+      #"export ANSIBLE_COMMAND=\"ansible-playbook -i /home/ansible/ad/GOAD/data/inventory -i /home/ansible/ad/GOAD/providers/vsphere/inventory\"",
+      "chmod +x /home/ansible/ansible/scripts/provision.sh && /home/ansible/ansible/scripts/provision.sh"
     ]
     connection {
       type     = "ssh"
-      host     = vsphere_virtual_machine.ubuntu-jumpbox.default_ip_address
+      host     = data.vsphere_virtual_machine.ubuntu-jumpbox.default_ip_address
       user     = "ansible"
       password = "ansible"
     }

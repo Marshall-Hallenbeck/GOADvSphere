@@ -22,8 +22,8 @@ resource "vsphere_virtual_machine" "ubuntu-jumpbox" {
     vsphere_virtual_machine.vms-2016,
     vsphere_virtual_machine.vms-2019
   ]
-  name             = "Ubuntu"
-  folder           = "GOAD/FULL/"
+  name             = "GOAD-Ubuntu-Jumpbox"
+  folder           = "GOAD/Admin/"
   resource_pool_id = data.vsphere_resource_pool.pool.id
   datastore_id     = data.vsphere_datastore.datastore.id
   num_cpus         = data.vsphere_virtual_machine.ubuntu_template.num_cpus
@@ -67,8 +67,8 @@ resource "vsphere_virtual_machine" "ubuntu-jumpbox" {
 }
 resource "vsphere_virtual_machine" "pfsense" {
   depends_on       = [data.vsphere_virtual_machine.pfsense_template]
-  name             = "pfSense"
-  folder           = "GOAD"
+  name             = "GOAD-pfSense"
+  folder           = "GOAD/Admin/"
   resource_pool_id = data.vsphere_resource_pool.pool.id
   datastore_id     = data.vsphere_datastore.datastore.id
   num_cpus         = data.vsphere_virtual_machine.pfsense_template.num_cpus
@@ -138,7 +138,7 @@ resource "vsphere_virtual_machine" "vms-2019" {
         ipv4_address    = each.value.ip_address
         ipv4_netmask    = "24"
       }
-      dns_server_list = ["192.168.56.1"]
+      dns_server_list = ["192.168.56.1", "127.0.0.1"]
       ipv4_gateway = "192.168.56.1"
     }
   }
@@ -200,7 +200,7 @@ resource "null_resource" "run_ansible" {
       "export LAB=GOAD",
       "export PROVIDER=vsphere",
       #"export ANSIBLE_COMMAND=\"ansible-playbook -i /home/ansible/ad/GOAD/data/inventory -i /home/ansible/ad/GOAD/providers/vsphere/inventory\"",
-      "chmod +x /home/ansible/ansible/scripts/provision.sh && /home/ansible/ansible/scripts/provision.sh"
+      "chmod +x /home/ansible/ad/GOAD/scripts/provision.sh && /home/ansible/ad/GOAD/scripts/provision.sh"
     ]
     connection {
       type     = "ssh"

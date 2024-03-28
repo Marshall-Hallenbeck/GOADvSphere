@@ -10,11 +10,15 @@ data "vsphere_datastore" "datastore" {
 #   datacenter_id = data.vsphere_datacenter.dc.id
 # }
 data "vsphere_virtual_machine" "pfsense" {
-  name          = "pfSense"
+  name          = "GOAD-pfSense"
   datacenter_id = data.vsphere_datacenter.dc.id
 }
-data "vsphere_virtual_machine" "ubuntu_template" {
-  name          = "ubuntu"
+# data "vsphere_virtual_machine" "ubuntu_template" {
+#   name          = "ubuntu"
+#   datacenter_id = data.vsphere_datacenter.dc.id
+# }
+data "vsphere_virtual_machine" "ubuntu-jumpbox" {
+  name          = "GOAD-Ubuntu-Jumpbox"
   datacenter_id = data.vsphere_datacenter.dc.id
 }
 data "vsphere_virtual_machine" "server2019_template" {
