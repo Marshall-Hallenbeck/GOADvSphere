@@ -21,7 +21,7 @@
   when: check_domain.changed
 
 - name: Ensure the server is a domain controller
-  win_domain_controller:
+  microsoft.windows.win_domain_controller:
     dns_domain_name: "{{domain}}"
     domain_admin_user: "Administrator@{{domain}}"
     domain_admin_password: "{{domain_password}}"
