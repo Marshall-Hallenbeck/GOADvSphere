@@ -9,10 +9,10 @@
             "path" : "DC=sccm,DC=lab",
             "local_groups" : {
                 "Administrators" : [
-                    "SCCM.LAB\\Domain Admins"
+                    "SCCMLAB\\Domain Admins"
                 ],
                 "Remote Desktop Users" : [
-                    "SCCM.LAB\\LocalAdmins"
+                    "SCCMLAB\\LocalAdmins"
                 ]
             },
             "scripts" : [],
@@ -26,11 +26,11 @@
             "path" : "DC=sccm,DC=lab",
             "local_groups" : {
                 "Administrators" : [
-                    "SCCM.LAB\\LocalAdmins",
-                    "SCCM.LAB\\SCCM-Admins"
+                    "SCCMLAB\\LocalAdmins",
+                    "SCCMLAB\\SCCM-Admins"
                 ],
                 "Remote Desktop Users" : [
-                    "SCCM.LAB\\RDPUsers"
+                    "SCCMLAB\\RDPUsers"
                 ]
             },
             "scripts" : [],
@@ -44,12 +44,12 @@
             "path" : "DC=sccm,DC=lab",
             "local_groups" : {
                 "Administrators" : [
-                    "SCCM.LAB\\LocalAdmins",
-                    "SCCM.LAB\\sccm-sql",
-                    "SCCM.LAB\\MECM$"
+                    "SCCMLAB\\LocalAdmins",
+                    "SCCMLAB\\sccm-sql",
+                    "SCCMLAB\\MECM$"
                 ],
                 "Remote Desktop Users" : [
-                    "SCCM.LAB\\RDPUsers"
+                    "SCCMLAB\\RDPUsers"
                 ]
             },
             "scripts" : [],
@@ -58,10 +58,10 @@
                 "sa_password": "Sup1_sa_P@ssw0rd!",
                 "svcaccount" : "sccm-sql",
                 "sysadmins" : [
-                    "SCCM.LAB\\administrator",
-                    "SCCM.LAB\\sccm-sql",
-                    "SCCM.LAB\\LocalAdmins",
-                    "SCCM.LAB\\MECM$"
+                    "SCCMLAB\\administrator",
+                    "SCCMLAB\\sccm-sql",
+                    "SCCMLAB\\LocalAdmins",
+                    "SCCMLAB\\MECM$"
                 ]
             }
         },
@@ -73,12 +73,12 @@
             "path" : "DC=sccm,DC=lab",
             "local_groups" : {
                 "Administrators" : [
-                    "SCCM.LAB\\LocalAdmins",
-                    "SCCM.LAB\\eve"
+                    "SCCMLAB\\LocalAdmins",
+                    "SCCMLAB\\eve"
                 ]
             },
             "Remote Desktop Users" : [
-                "SCCM.LAB\\RDPUsers"
+                "SCCMLAB\\RDPUsers"
             ],
             "scripts" : [],
             "vulns" : ["disable_firewall"]
@@ -88,7 +88,7 @@
         "sccm.lab" : {
             "dc": "dc01",
             "domain_password" : "AZERTY*qsdfg",
-            "netbios_name": "SCCM.LAB",
+            "netbios_name": "SCCMLAB",
             "sccm": {
                 "site_code": "P01",
                 "sccm_server": "MECM",
@@ -100,7 +100,7 @@
                 "account_da" : "sccm-account-da",
                 "pxe_location" : "LDAP://CN=Computers,DC=sccm,DC=lab",
                 "pxe_admin_pass": "EP+xh7Rk6j90",
-                "admins" : ["SCCM.LAB\\SCCM-Admins"]
+                "admins" : ["SCCMLAB\\SCCM-Admins"]
             },
             "laps_path": "OU=Laps,DC=sccm,DC=lab",
             "organisation_units" : {},
@@ -118,7 +118,7 @@
                     "SCCM-Site-Server" : {
                         "managed_by" : "alice",
                         "path" : "CN=Users,DC=sccm,DC=lab",
-                        "members" : ["SCCM.LAB\\MECM$"]
+                        "members" : ["SCCMLAB\\MECM$"]
                     },
                     "SCCM-Admins" : {
                         "managed_by" : "dave",
@@ -127,7 +127,7 @@
                     "SCCM-Managed-Device" : {
                         "managed_by" : "alice",
                         "path" : "CN=Users,DC=sccm,DC=lab",
-                        "members" : ["SCCM.LAB\\CLIENT$","SCCM.LAB\\MECM$","SCCM.LAB\\MSSQL$","SCCM.LAB\\DC$"]
+                        "members" : ["SCCMLAB\\CLIENT$","SCCMLAB\\MECM$","SCCMLAB\\MSSQL$","SCCMLAB\\DC$"]
                     }
                 },
                 "domainlocal" : {}
