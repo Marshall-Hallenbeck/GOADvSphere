@@ -55,8 +55,10 @@ resource "vsphere_virtual_machine" "vms-2019" {
   }
 }
 
+# TODO: snapshot here: https://registry.terraform.io/providers/hashicorp/vsphere/latest/docs/resources/virtual_machine_snapshot
+
 resource "null_resource" "run_ansible" {
-  depends_on = [data.vsphere_virtual_machine.ubuntu-jumpbox]
+  depends_on = [vsphere_virtual_machine.vms-2019]
   triggers = {
     vm_id = data.vsphere_virtual_machine.ubuntu-jumpbox.id
   }

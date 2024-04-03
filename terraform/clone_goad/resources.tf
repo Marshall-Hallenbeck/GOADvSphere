@@ -138,7 +138,7 @@ resource "vsphere_virtual_machine" "vms-2019" {
         ipv4_address    = each.value.ip_address
         ipv4_netmask    = "24"
       }
-      dns_server_list = ["192.168.56.1", "127.0.0.1"]
+      dns_server_list = ["192.168.56.1"]
       ipv4_gateway = "192.168.56.1"
     }
   }
@@ -188,6 +188,9 @@ resource "vsphere_virtual_machine" "vms-2016" {
     }
   }
 }
+
+# TODO: snapshot here: https://registry.terraform.io/providers/hashicorp/vsphere/latest/docs/resources/virtual_machine_snapshot
+
 resource "null_resource" "run_ansible" {
   depends_on = [vsphere_virtual_machine.ubuntu-jumpbox]
   triggers = {
